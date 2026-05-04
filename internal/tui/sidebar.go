@@ -55,38 +55,21 @@ func (m Model) renderSidebar() string {
 
 func (m Model) renderHelpBar() string {
 	var parts []string
-	parts = append(parts, lipgloss.NewStyle().Foreground(colors.Primary).Render("?"))
-	parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("help"))
-	parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("·"))
 
-	// Context-sensitive help
 	switch m.state {
 	case stateDashboard:
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Primary).Render("s"))
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("scan"))
+		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("↑↓ Navigate  Enter Select  q Quit"))
 	case stateScan:
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Primary).Render("space"))
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("toggle"))
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("·"))
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Primary).Render("enter"))
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("start"))
+		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("↑↓ Navigate  Space Toggle  Enter Start  Esc Back"))
 	case stateScanning:
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Primary).Render("ctrl+c"))
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("cancel"))
+		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("Scanning...  Esc Cancel"))
 	case stateResults:
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Primary).Render("↑↓"))
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("navigate"))
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("·"))
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Primary).Render("f"))
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("fix"))
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("·"))
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Primary).Render("e"))
-		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("export"))
+		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("↑↓ Navigate  Enter Detail  Space Fix  Esc Back"))
+	case stateVulnDB, stateReport, stateConfig:
+		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("↑↓ Navigate  Enter Select  Esc Back  q Quit"))
+	default:
+		parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("↑↓ Navigate  Enter Select  Esc Back  q Quit"))
 	}
-
-	parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("·"))
-	parts = append(parts, lipgloss.NewStyle().Foreground(colors.Primary).Render("q"))
-	parts = append(parts, lipgloss.NewStyle().Foreground(colors.Muted).Render("quit"))
 
 	return helpStyle.Render(strings.Join(parts, " "))
 }

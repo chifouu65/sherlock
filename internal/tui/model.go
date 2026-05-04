@@ -1,9 +1,7 @@
 package tui
 
 import (
-	"context"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/charmbracelet/bubbles/key"
@@ -108,13 +106,14 @@ type Model struct {
 	navIndex   int
 	
 	// Scan
-	scanOpts   scanOptions
-	scanning   bool
-	spinner    spinner.Model
-	scanProgress float64
-	scanResults []vulndb.Finding
+	scanOpts      scanOptions
+	scanning      bool
+	spinner       spinner.Model
+	scanProgress  float64
+	scanResults   []vulndb.Finding
 	scanStartTime time.Time
-	scanElapsed  time.Duration
+	scanElapsed   time.Duration
+	scanMenuIndex int
 	
 	// Results
 	resultsTable table.Model
@@ -205,35 +204,19 @@ func tickCmd() tea.Cmd {
 // Update implements tea.Model
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmds []tea.Cmd
-	
+
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
-		m.updateLayout()
-		
+
 	case tea.KeyMsg:
+		// Global quit
 		if key.Matches(msg, m.keys.Quit) {
 			return m, tea.Quit
 		}
-		if key.Matches(msg, m.keys.Help) {
-			m.showHelp = !m.showHelp
-			return m, nil
-		}
-		
-		// Global navigation shortcuts
-		for _, item := range navItems {
-			if msg.Runes != nil && len(msg.Runes) > 0 && msg.Runes[0] == item.shortcut {
-				m.prevState = m.state
-				m.state = item.state
-				m.navIndex = indexOfNav(item.state)
-				m.scanning = false
-				m.showDetail = false
-				return m, nil
-			}
-		}
-		
-		// State-specific handlers
+
+		// State-specific handling
 		switch m.state {
 		case stateDashboard:
 			return m.updateDashboard(msg)
@@ -250,7 +233,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case stateConfig:
 			return m.updateConfig(msg)
 		}
-		
+
 	case tickMsg:
 		cmds = append(cmds, tickCmd())
 		if m.scanning {
@@ -259,11 +242,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.toast != "" && time.Since(m.toastTimer) > 3*time.Second {
 			m.toast = ""
 		}
-		
+
 	case scanProgressMsg:
 		m.scanResults = append(m.scanResults, msg.finding)
 		m.scanProgress += 0.05
-		
+
 	case scanCompleteMsg:
 		m.scanning = false
 		m.scanResults = msg.findings
@@ -272,28 +255,28 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.dashboard.totalFindings += len(msg.findings)
 		m.updateDashboardCounts()
 		m.state = stateResults
-		m.updateResultsTable()
-		m.toast = fmt.Sprintf("✓ Scan complete: %d findings in %v", len(msg.findings), msg.duration)
+		m.selectedFinding = 0
+		m.toast = fmt.Sprintf("✓ Scan complete: %d findings in %v", len(msg.findings), msg.duration.Round(time.Second))
 		m.toastTimer = time.Now()
-		
+
 	case scanErrorMsg:
 		m.scanning = false
 		m.toast = fmt.Sprintf("✗ Scan failed: %v", msg.err)
 		m.toastTimer = time.Now()
 		m.state = stateScan
-		
+
 	case toastMsg:
 		m.toast = string(msg)
 		m.toastTimer = time.Now()
 	}
-	
+
 	// Update spinner
 	if m.scanning {
 		var cmd tea.Cmd
 		m.spinner, cmd = m.spinner.Update(msg)
 		cmds = append(cmds, cmd)
 	}
-	
+
 	return m, tea.Batch(cmds...)
 }
 
