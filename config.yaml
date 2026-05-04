@@ -1,0 +1,35 @@
+# Sherlock Configuration
+
+llm:
+  provider: ollama
+  base_url: http://localhost:11434/v1
+  api_key: ""
+  model: llama3
+
+scanner:
+  network:
+    timeout_ms: 2000
+    concurrency: 100
+    default_ports: "1-1000"
+    targets: []
+  code:
+    secrets_patterns:
+      - "password"
+      - "secret"
+      - "api_key"
+      - "token"
+      - "private_key"
+    ignore_paths:
+      - ".git"
+      - "node_modules"
+      - "vendor"
+      - "dist"
+      - "build"
+
+reporter:
+  default_format: markdown
+  output_dir: "./reports"
+
+vulndb:
+  local_db_path: "./sherlock.db"
+  auto_update: true

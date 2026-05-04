@@ -1,0 +1,43 @@
+# Binaires
+sherlock
+sherlock.exe
+*.exe
+
+# Base de données
+*.db
+*.db-shm
+*.db-wal
+
+# Rapports
+reports/
+*.md
+!README.md
+!CONTRIBUTING.md
+!ARCHITECTURE.md
+!LICENSE
+
+# Config locale (peut contenir des clés API)
+config.local.yaml
+.env
+
+# Go
+vendor/
+*.test
+*.out
+coverage.html
+coverage.txt
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependances build
+dist/
+build/
