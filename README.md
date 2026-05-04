@@ -87,7 +87,23 @@ vulndb:
 
 ## 🛠️ Utilisation
 
-### Scan complet
+### Interface Terminal (TUI) — Recommandé
+
+```bash
+sherlock tui
+```
+
+Lance l'interface interactive dans le terminal :
+- **Dashboard** avec statistiques en temps réel
+- **Scan interactif** : cochez les scanners, lancez, voyez les résultats live
+- **Navigation clavier** : `s` scan, `d` dashboard, `v` vulndb, `q` quit
+- **Résultats** : tableaux colorés par sévérité, détails, auto-fix
+- **SSH/VPS friendly** : zéro navigateur, tout en terminal
+
+### Mode CLI classique
+
+```bash
+# Scan complet
 
 ```bash
 # Scan tout (code + réseau + OS)
