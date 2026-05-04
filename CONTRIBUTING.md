@@ -20,7 +20,19 @@ Merci de l'intérêt pour Sherlock ! 🕵️‍♂️
 2. Décrivez le use case
 3. Si possible, proposez une implémentation
 
-### Pull Requests
+### Branches et Versions
+
+- **`main`** : branche stable, releases officielles uniquement
+- **`vX.X.X`** : branches de feature/version (ex: `v0.2.0-tui`, `v0.3.0-network-scan`)
+- **Tags** : `git tag v0.1.0` sur main après merge
+
+Workflow :
+```bash
+# Nouvelle feature
+git checkout -b v0.2.0-nouvelle-feature
+git push origin v0.2.0-nouvelle-feature
+# PR → review → merge sur main → tag v0.2.0
+```
 
 1. Forkez le repo
 2. Créez une branche (`git checkout -b feature/amazing-feature`)
