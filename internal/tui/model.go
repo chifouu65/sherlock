@@ -2,6 +2,7 @@ package tui
 
 import (
 	"fmt"
+	"path/filepath"
 	"time"
 
 	"github.com/charmbracelet/bubbles/key"
@@ -264,6 +265,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.toast = fmt.Sprintf("✗ Scan failed: %v", msg.err)
 		m.toastTimer = time.Now()
 		m.state = stateScan
+
+	case reportGeneratedMsg:
+		m.toast = fmt.Sprintf("✓ Report saved: %s (%s)", filepath.Base(msg.filename), msg.format)
+		m.toastTimer = time.Now()
 
 	case toastMsg:
 		m.toast = string(msg)
